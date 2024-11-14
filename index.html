@@ -19,6 +19,8 @@
     <input type='checkbox' checked id='checkbox_d'>D</input> 
     <input type='checkbox' checked id='checkbox_a'>A</input> 
     <input type='checkbox' checked id='checkbox_e'>E</input>
+    <input type='checkbox' checked id='checkbox_lines'>lines</input>
+    <input type='checkbox' checked id='checkbox_spaces'>spaces</input>
   </div>
   <div id="staff"></div>
   <p id="note-value"></p>
@@ -67,12 +69,18 @@
       const notes_d = ["d/4", "e/4", "f/4", "g/4"];
       const notes_a = ["a/4", "b/4", "c/5", "d/5"];
       const notes_e = ["e/5", "f/5", "g/5", "a/5", "b/5", "c/6"];
+      const notes_lines = ["a/3", "c/4", "e/4", "g/4", "b/4", "d/5", "f/5", "a/5", "c/6"];
       let notes = [];
       if (document.getElementById('checkbox_g').checked) notes = notes.concat(notes_g);
       if (document.getElementById('checkbox_d').checked) notes = notes.concat(notes_d);
       if (document.getElementById('checkbox_a').checked) notes = notes.concat(notes_a);
       if (document.getElementById('checkbox_e').checked) notes = notes.concat(notes_e);
-      
+      if (!document.getElementById('checkbox_lines').checked) {
+        notes = notes.filter(note => !notes_lines.includes(note));
+      }
+      if (!document.getElementById('checkbox_spaces').checked) {
+        notes = notes.filter(note => notes_lines.includes(note));
+      }
       //console.log(notes);
       //notes = notes_g + notes_d;
       // Select a random note
