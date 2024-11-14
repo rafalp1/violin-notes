@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Note violin</title>
+  <script src="https://unpkg.com/vexflow/releases/vexflow-min.js"></script>
+  <style>
+    #staff { border: 0px solid black; margin-top: 20px; width: 500px; height: 150px; }
+    .note-button { margin: 5px; padding: 10px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <button id='verdict' width=50 onclick='resetScore()'>..</button><br>
+  <div>Good: <span id='good'></span></div>
+  <div>Bad: <span id='bad'></span></div>
+
+  <div id="staff"></div>
+  <p id="note-value"></p>
+
+  <script>
+    const VF = Vex.Flow;
+
+    function renderNote(note) {
+      // Clear previous render
+      document.getElementById("staff").innerHTML = "";
+
+      // Set up VexFlow renderer
+      const div = document.getElementById("staff");
+      const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+      renderer.resize(500, 150); // Set the size of the canvas
+      
+      const context = renderer.getContext();
+      context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
+
+      // Create a stave at position 10, 40, with width of 400
+      const stave = new VF.Stave(10, 40, 400);
+      stave.addClef("treble").addTimeSignature("4/4");
+      stave.setContext(context).draw();
+
+      // Render the selected note
+      const notes = [
+        new VF.StaveNote({ clef: "treble", keys: [note], duration: "w" })
+      ];
+
+      // Create a voice in 4/4 and add the notes
+      const voice = new VF.Voice({ num_beats: 4, beat_value: 4 });
+      voice.addTickables(notes);
+
+      // Format and justify the notes to 400 pixels
+      const formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
+
+      // Render voice
+      voice.draw(context, stave);
+    }
+
+    let lastRandomNote = undefined;
+
+    // Function to render a random note from the specified range
+    function renderRandomNote() {
+      const notes_g = ["g/3", "a/3", "b/3", "c/4"];
+      const notes_d = ["d/4", "e/4", "f/4", "g/4"];
+      const notes_a = ["a/4", "b/4", "c/5", "d/5"];
+      const notes_e = ["e/5", "f/5", "g/5", "a/5", "b/5", "c/6"];
+      let notes = [...notes_g, ...notes_d]; //, ...notes_a, ...notes_e];
+      //console.log(notes);
+      //notes = notes_g + notes_d;
+      // Select a random note
+      const randomNote = notes[Math.floor(Math.random() * notes.length)];
+
+      // Render the random note
+      renderNote(randomNote);
+      lastRandomNote = randomNote;
+    }
+
+    let good = 0;
+    let bad = 0;
+
+    function checkNote(note) { 
+      if (note == lastRandomNote) {
+        document.getElementById("verdict").style.backgroundColor = "green";
+        renderRandomNote();
+        good += 1;
+      } else {
+        document.getElementById("verdict").style.backgroundColor = "red";
+        bad += 1;
+      }
+      updateScore();
+    }
+
+    function updateScore() {
+       document.getElementById('good').innerText = good;
+       document.getElementById('bad').innerText = bad;
+    }
+
+    function resetScore() { good = 0; bad = 0; updateScore(); }
+
+    renderRandomNote();
+    updateScore();
+  </script>
+
+  <div id="note-buttons">
+    <button class="note-button" onclick="checkNote('g/3')">G</button>
+    <button class="note-button" onclick="checkNote('a/3')">G1</button>
+    <button class="note-button" onclick="checkNote('b/3')">G2</button>
+    <button class="note-button" onclick="checkNote('c/4')">G3</button>
+    <br>
+    <button class="note-button" onclick="checkNote('d/4')">D</button>
+    <button class="note-button" onclick="checkNote('e/4')">D1</button>
+    <button class="note-button" onclick="checkNote('f/4')">D2</button>
+    <button class="note-button" onclick="checkNote('g/4')">D3</button>
+    <br>
+    <button class="note-button" onclick="checkNote('a/4')">A</button>
+    <button class="note-button" onclick="checkNote('b/4')">A1</button>
+    <button class="note-button" onclick="checkNote('c/5')">A2</button>
+    <button class="note-button" onclick="checkNote('d/5')">A3</button>
+    <br>
+    <button class="note-button" onclick="checkNote('e/5')">E</button>
+    <button class="note-button" onclick="checkNote('f/5')">E1</button>
+    <button class="note-button" onclick="checkNote('g/5')">E2</button>
+    <button class="note-button" onclick="checkNote('a/5')">E3</button>
+    <button class="note-button" onclick="checkNote('b/5')">E4</button>
+    <button class="note-button" onclick="checkNote('c/6')">E5</button>
+  </div>
+
+</body>
+</html>
