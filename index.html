@@ -14,7 +14,7 @@
   <button id='verdict' width=50 onclick='resetScore()'>..</button><br>
   <div>Good: <span id='good'></span></div>
   <div>Bad: <span id='bad'></span></div>
-
+  <div><checkbox id='checkbox_g'>G</checkbox> <checkbox id='checkbox_d'>D</checkbox> <checkbox id='checkbox_a'>A</checkbox> <checkbox id='checkbox_e'>E</checkbox></div>
   <div id="staff"></div>
   <p id="note-value"></p>
 
@@ -62,7 +62,12 @@
       const notes_d = ["d/4", "e/4", "f/4", "g/4"];
       const notes_a = ["a/4", "b/4", "c/5", "d/5"];
       const notes_e = ["e/5", "f/5", "g/5", "a/5", "b/5", "c/6"];
-      let notes = [...notes_g, ...notes_d]; //, ...notes_a, ...notes_e];
+      let notes = [];
+      if (document.getElementById('checkbox_g').checked) notes = notes.concat(notes_g);
+      if (document.getElementById('checkbox_d').checked) notes = notes.concat(notes_d);
+      if (document.getElementById('checkbox_a').checked) notes = notes.concat(notes_a);
+      if (document.getElementById('checkbox_e').checked) notes = notes.concat(notes_e);
+      
       //console.log(notes);
       //notes = notes_g + notes_d;
       // Select a random note
